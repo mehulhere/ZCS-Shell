@@ -1,0 +1,23 @@
+The provided code is an implementation of a simple Unix-like shell written in C, known as the "Zombie Child Shell" (ZCS). The shell supports internal commands such as "word", "dir", and "date", as well as the ability to execute external commands. It implements various functions to handle command parsing, file operations, argument validation, and process management.
+Command Details
+1. word Command
+Implementation:
+•	The wordcounter function calculates the number of words in a given file.
+•	The nonewlinewordcounter function counts words in a file, ignoring newline characters.
+•	The worderrorhandler function validates and processes the "word" command's options and arguments.
+•	The wordoptionintplot function maps option characters to corresponding option numbers.
+2. dir Command
+Implementation:
+•	The direrrorhandler function validates and processes the "dir" command's options and arguments.
+•	The directory creation and path change are handled in the main loop.
+3. date Command
+Implementation:
+•	The dateerrorhandler function validates and processes the "date" command's options and arguments.
+Key Components and Functionality
+•	Tokenization (tokenisation): Splits user input into command and arguments.
+•	Argument Validation Functions: Various functions (checkhyphen, txtfileextensioncheck, etc.) validate command-line arguments.
+•	File Operations: Functions like fileOpen, wordcounter, and nonewlinewordcounter handle file-related operations.
+•	Main Loop: The shell's main loop repeatedly takes user input, tokenizes it, and executes appropriate commands.
+•	Command Execution: The shell executes internal commands directly and external commands using execv.
+•	Directory Handling: The shell changes the current directory using chdir and creates directories.
+•	Output Formatting: The shell provides informative output messages and error handling.
