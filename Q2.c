@@ -86,6 +86,8 @@ int argumenthandler(char args[]){
     }
 }
 
+
+
 int dirargumenthandler(char args[]){
 
     if (args==NULL){
@@ -128,6 +130,8 @@ int worderrorhandler(char* args[]){
         }
         }
     }
+
+
     else if(checkhyphen(args[1])==0){
         printf("\033[1;31mZombie Child is ANGRY: \033[0mInsufficient Arguments");
         return -1;
@@ -142,6 +146,7 @@ int worderrorhandler(char* args[]){
     }
         }
 }
+
 
 
 int direrrorhandler(char* args[]){
@@ -217,6 +222,42 @@ int dateerrorhandler(char* args[]){
     }
         }
         return 0;
+}
+
+int lserrorhandler(char* args[]) {
+    // Count arguments
+    int argc = 0;
+    while (args[argc] != NULL) {
+        argc++;
+    }
+
+    // Check for valid number of arguments
+    if (argc > 3) {
+        printf("\033[1;31mZombie Child is ANGRY: \033[0mToo many arguments.\n");
+        return -1;
+    }
+
+    if (argc == 1) {
+        // Only "ls" is given, which is valid.
+        return 0;
+    }
+
+    if (checkhyphen(args[1])) {
+        // Check for valid options "-a" or "-l"
+        if (strcmp(args[1], "-a") == 0 || strcmp(args[1], "-l") == 0) {
+            if (argc == 3) {
+                printf("\033[1;31mZombie Child is ANGRY: \033[0mUnexpected argument: %s", args[2]);
+                return -1;
+            }
+            return 0; // Valid case
+        } else {
+            printf("\033[1;31mZombie Child is ANGRY: \033[0mInvalid option: %s", args[1]);
+            return -1;
+        }
+    } else {
+        printf("\033[1;31mZombie Child is ANGRY: \033[0mExpected option, but got: %s", args[1]);
+        return -1;
+    }
 }
 
 
@@ -302,7 +343,8 @@ int main(int argc, char *argv[]) {
     pid_t parentpid = (int) getpid();
     int dircreate = 0; 
     char* dirname = NULL;
-    printf("\033[1;32mZombie Child Shell\n\033[0m");  
+    const char* bgRed = "\x1b[41m";
+    printf("\033[1;32mZombie Child Shell\n\033[0m", bgRed);  
         printf("  _____\n");
     printf(" /     \\\n");
     printf("|  T T  |\n");
@@ -319,7 +361,7 @@ int main(int argc, char *argv[]) {
         // char dirname[50]={'\0'};
         char mypath[200]={'\0'};
         char userinput[100]={'\0'};
-        char *args[5] = {NULL}; // Initialize an array of pointers with NULL
+        char *args[100] = {NULL}; // Initialize an array of pointers with NULL
         int commandid=-1;
         fflush(stdout);
         if (dircreate == 1){
@@ -346,7 +388,7 @@ int main(int argc, char *argv[]) {
 
 
     
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 100; i++) {
         if (tokenizedarr[i][0] != '\0') {
             args[i] = tokenizedarr[i];
         }
@@ -369,7 +411,6 @@ int main(int argc, char *argv[]) {
     }
         break;
         case 2:;
-    
             int p = wordcounter(args[2]);
             int q = wordcounter(args[3]);
             if (p!=-1 && q!=-1){
@@ -401,6 +442,15 @@ int main(int argc, char *argv[]) {
         fflush(stdout);
 
     }
+
+    else if(strcmp("ls", tokenizedarr[0]) == 0){
+        commandid=3;
+        if(lserrorhandler(args)==-1){
+            fflush(stdout);
+            continue;
+        }
+    }
+
     else if(strcmp("date", tokenizedarr[0]) == 0){
         commandid=2;
         // if(dateerrorhandler(args)==-1){
@@ -439,6 +489,14 @@ int main(int argc, char *argv[]) {
            strcat(mainpath,anotherString);
         if (execv(mainpath, args)==-1){ //Please change the address accodindly in the command
             printf("\033[1;31mZombie Child is ANGRY: \033[0mExecutable file not found at the specified address");
+        }
+    }
+
+    else if (commandid == 3){
+        char anotherString[]= "Q2/ls";
+           strcat(mainpath,anotherString);
+        if (execv(mainpath, args)==-1){ //Please change the address accodindly in the command
+            printf("\033[1;31mZombie Child is ANGRY: \033[0mExecutable file not found at the specified address: ");
         }
     }
     }

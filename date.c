@@ -280,7 +280,6 @@ void datecheck(int rows, char inputtokens[rows][100]){//Checks type of command f
 
 int main(int argc, char *argv[]){
 
-
     char arr[5][100]; 
     for (int i = 0; i < 5; i++) { 
         if (i < argc && argv[i][0] != '\0') { 
@@ -288,7 +287,6 @@ int main(int argc, char *argv[]){
             strncpy(arr[i], argv[i], 99); // copy at most 99 characters 
             arr[i][99] = '\0'; // add a null character at the end 
             } }
-
 
         datecheck(argc, arr);
 
