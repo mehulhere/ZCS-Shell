@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a simple Unix-like shell, known as the "Zombie Child Shell" (ZCS), implemented in C. The shell supports internal commands like `word`, `dir`, and `date`, as well as the ability to execute external commands. It provides various functions for command parsing, file operations, argument validation, and process management.
+This project is a simple Unix-like shell, known as the "Zombie Child Shell" (ZCS), implemented in C. The shell supports internal commands like `word`, `dir`, and `date`, `ls`, as well as the ability to execute external commands. It provides various functions for command parsing, file operations, argument validation, and process management.
 
 ## Commands
 
@@ -30,6 +30,14 @@ This project is a simple Unix-like shell, known as the "Zombie Child Shell" (ZCS
   - `-d`: Display time described by STRING.
   - `-R`: Output date and time in RFC 5322 format.
 
+### 4. Ls Command
+
+- **Description**: Lists content of the current working directory
+- **Syntax**: `ls [-a|-l]`
+- **Options**:
+  - `-l`: Lists the directory contents in a long listed format.
+  - `-a`: Lists all the directory contents, including hidden files.
+
 ## Examples
 
 - Count words in a file: `word file.txt`
@@ -40,3 +48,6 @@ This project is a simple Unix-like shell, known as the "Zombie Child Shell" (ZCS
 - Get last modified date and time: `date file.txt`
 - Display time in a custom format: `date -d "2023-09-23 14:30:00" file.txt`
 - Output in RFC 5322 format: `date -R file.txt`
+- List contents of current working directory: `ls`
+- List contents of current working directory with information: `ls -l`
+- List all contents, including hidden files: `ls -a`
