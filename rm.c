@@ -6,11 +6,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <signal.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/stat.h>
 #include <dirent.h>
 
 // Function to handle the '-r' option
