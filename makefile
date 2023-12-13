@@ -1,17 +1,17 @@
 all: Q2 date dir ls run_script
 
 Q2: Q2.c
-	gcc Q2.c -o Q2
+	gcc Q2.c -g -o Q2
 	./Q2 
 
 date: date.c
-	gcc date.c -o date
+	gcc date.c -g -o date
 
 dir: dir.c
-	gcc dir.c -o dir
+	gcc dir.c -g -o dir
 
 ls: ls.c
-	gcc ls.c -o ls
+	gcc ls.c -g -o ls
 
 .PHONY: run_script
 

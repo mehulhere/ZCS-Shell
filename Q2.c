@@ -541,7 +541,7 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
     
-        char tokenizedarr[5][100]={"\0"};
+        char tokenizedarr[100][100]={"\0"};
         fflush(stdout);
     tokenisation(userinput, tokenizedarr);
 
@@ -665,7 +665,7 @@ int main(int argc, char *argv[]) {
 
     else if (rc == 0) {//fork is successful, the rc of child=0, rc of parent=PID of child
     // printf("fork successful\n");
-    char* mainpath=extractBeforeQ2M(mypath);
+    // char* mainpath=extractBeforeQ2M(mypath);
     if (commandid == 0) {
         exit(1); //Internal Command
     }
