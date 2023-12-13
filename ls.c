@@ -23,6 +23,7 @@ void printFileMode(mode_t mode) {
 }
 
 void printFileInfo(struct dirent *d, int l, const char *dir) {
+    int isHiddenFile = (d->d_name[0] == '.');
     if (l) {
         struct stat fileInfo;
         char path[1024];
@@ -46,7 +47,13 @@ void printFileInfo(struct dirent *d, int l, const char *dir) {
         strftime(timeStr, sizeof(timeStr), "%b %d %H:%M", localtime(&fileInfo.st_mtime));
         printf(" %s %s\n", timeStr, d->d_name);
     } else {
-        printf("%s\n", d->d_name);
+        if (isHiddenFile) {
+            printf("\033[42m\033[34m%s\033[0m ", d->d_name); // Yellow color for hidden files
+        } else {
+            printf("\033[1;32m%s \x1b[34m \033[0m", d->d_name);// Green color for regular files
+        }
+       
+      
     }
 }
 
@@ -64,7 +71,6 @@ void ls(const char *dir, int l, int a) {
         }
         printFileInfo(d, l, dir);
     }
-
     closedir(dp);
 }
 
@@ -82,6 +88,5 @@ int main(int argc, char *argv[]) {
     }
 
     ls(".", l_flag, a_flag);
-
     return 0;
 }
