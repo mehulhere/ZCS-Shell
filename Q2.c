@@ -281,6 +281,9 @@ int pwderrorhandler(char* args[]) {
 }
 
 
+
+
+
 int wordoptionintplot(char arg[]){
     switch(arg[1]){
         case 'n':
@@ -406,6 +409,90 @@ int rmErrorHandler(char* args[]) {
             return -1;
         }
     }
+    return 0;
+}
+
+void displayCommandManual(const char* command) {
+    if (strcmp(command, "word") == 0) {
+        printf("word - Count the number of words in a file\n");
+        printf("word -d - Gives difference between the word sizes of two text files\n");
+        printf("word -n - Count the number of words in a file ignoring newline character");
+
+    } else if (strcmp(command, "dir") == 0) {
+        printf("dir - List the contents of a directory\n");
+        printf("dir -r - Removes if the directory already exists and create a new directory instead of throwing an error\n");
+        printf("dir -v : Prints a message for each step in the running of dir");
+
+    } else if (strcmp(command, "date") == 0) {
+        printf("date - Display or set the system date and time\n");
+        printf("date -d - Display time described by STRING\n");
+        printf("date -R - Output date and time in RFC 5322 format");
+
+
+    } else if (strcmp(command, "ls") == 0) {
+        printf("ls -List directory contents\n");
+        printf("ls -a - List all directory contents, including hidden files\n");
+        printf("ls -l - List all directory contents, with file information");
+
+    } else if (strcmp(command, "pwd") == 0) {
+        printf("pwd - Print the name of the current working directory");
+    } else if (strcmp(command, "cd") == 0) {
+        printf("cd - Change the current directory");
+    } else if (strcmp(command, "rm") == 0) {
+        printf("rm - Remove files or directories");
+    } else if (strcmp(command, "help") == 0) {
+        printf("help - Display information about builtin commands");
+    } else if (strcmp(command, "exit") == 0) {
+        printf("exit - Exit the shell");
+    } else {
+        printf("No manual entry for %s", command);
+    }
+}
+
+void help(char* args[]){
+     int argc = 0;
+    while (args[argc] != NULL) {
+        argc++;
+    }
+
+    if (argc == 1) {
+        // Display list of all commands if no specific command is provided
+        printf("These shell commands are defined internally and externally. Type `help` to see this list.\n");
+        printf("Type `help name` to find out more about the function `name`.\n");
+        printf("Use `info bash` to find out more about the shell in general.\n");
+        printf("word [-dD]\n");
+        printf("dir []\n");
+        printf("date [-Rd] [name...]\n");
+        printf("ls [-la]\n");
+        printf("pwd\n");
+        printf("cd\n");
+        printf("rm\n");
+        printf("help [name...]\n");
+        printf("exit\n");
+        printf("Type 'help [command]' to get more information on a specific command.");
+    } else if (argc == 2) {
+        // Display manual for the specific command
+        displayCommandManual(args[1]);
+    } else {
+        printf("Usage: help [command]\n");
+    }
+
+}
+
+int helperrorhandler(char* args[]) {
+    // Count arguments
+    int argc = 0;
+    while (args[argc] != NULL) {
+        argc++;
+    }
+
+    // Check for valid number of arguments
+    if (argc > 2) {
+        printf("\033[1;31mZombie Child is ANGRY: \033[0mToo many arguments for 'help' command.\n");
+        return -1;
+    }
+
+    // The 'help' command is valid with no arguments or one argument.
     return 0;
 }
 
@@ -554,6 +641,14 @@ int main(int argc, char *argv[]) {
         }
     }
 
+        else if(strcmp("help", tokenizedarr[0]) == 0){
+        commandid=7;
+        if(helperrorhandler(args)==-1){ //Checks error in dir commands
+            fflush(stdout);
+            continue;
+        }
+    }
+
     else if(strcmp("exit", tokenizedarr[0]) == 0){
         break;
     }
@@ -574,25 +669,31 @@ int main(int argc, char *argv[]) {
         exit(1); //Internal Command
     }
     else if (commandid == 1){
-        char anotherString[] = "Q2/dir";
-        strcat(mainpath,anotherString);
-        if (execv(mainpath, args)==-1){ //Please change the address accodindly in the command
+        char pathconcatinate[200]={'\0'};
+        getcwd(pathconcatinate, sizeof(pathconcatinate));
+        char anotherString[] = "/dir";
+        strcat(pathconcatinate, anotherString);
+        if (execv(pathconcatinate, args)==-1){ //Please change the address accodindly in the command
             printf("\033[1;31mZombie Child is ANGRY: \033[0mExecutable file not found at the specified address");
         }
     }
     else if (commandid == 2){
-        char anotherString[]= "Q2/date";
-           strcat(mainpath,anotherString);
-        if (execv(mainpath, args)==-1){ //Please change the address accodindly in the command
+        char pathconcatinate[200]={'\0'};
+        getcwd(pathconcatinate, sizeof(pathconcatinate));
+        char anotherString[] = "/date";
+        strcat(pathconcatinate, anotherString);
+        if (execv(pathconcatinate, args)==-1){ //Please change the address accodindly in the command
             printf("\033[1;31mZombie Child is ANGRY: \033[0mExecutable file not found at the specified address");
         }
     }
 
     else if (commandid == 3){
-        char anotherString[]= "Q2/ls";
-           strcat(mainpath,anotherString);
-        if (execv(mainpath, args)==-1){ //Please change the address accodindly in the command
-            printf("\033[1;31mZombie Child is ANGRY: \033[0mExecutable file not found at the specified address: ");
+        char pathconcatinate[200]={'\0'};
+        getcwd(pathconcatinate, sizeof(pathconcatinate));
+        char anotherString[] = "/ls";
+        strcat(pathconcatinate, anotherString);
+        if (execv(pathconcatinate, args)==-1){ //Please change the address accodindly in the command
+            printf("\033[1;31mZombie Child is ANGRY: \033[0mExecutable file not found at the specified address");
         }
     } 
 
@@ -607,13 +708,19 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     else if(commandid == 6){ //rm
-        char anotherString[]= "Q2/rm";
-           strcat(mainpath,anotherString);
-        if (execv(mainpath, args)==-1){ //Please change the address accodingly in the command
-            printf("\033[1;31mZombie Child is ANGRY: \033[0mExecutable file not found at the specified address"); //This shouldn't happen
-            printf("%s", mainpath);
+       char pathconcatinate[200]={'\0'};
+        getcwd(pathconcatinate, sizeof(pathconcatinate));
+        char anotherString[] = "/rm";
+        strcat(pathconcatinate, anotherString);
+        if (execv(pathconcatinate, args)==-1){ //Please change the address accodindly in the command
+            printf("\033[1;31mZombie Child is ANGRY: \033[0mExecutable file not found at the specified address");
         }
     }
+
+     else if(commandid == 7){ //rm
+        help(args);
+    }
+
     }
     else {
 

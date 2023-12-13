@@ -19,7 +19,7 @@ int istxtfile(const char *filename) {//Checks if a given file is a text file.
     return 0;  
 }
 void printerror(){ //Prints and error message for invalid syntax
-    printf("Please enter a valid command");
+     printf("\033[1;31mZombie Child is ANGRY: \033[0mInvalid command entered");
 }
 int isnumber(const char *string){//Check if string is a  number
     while (*string){
@@ -75,7 +75,7 @@ struct tm* rdatehandler(char filename[100], int toprint) {//Prints last modified
         }
 
     else {
-    printf("Your file could not be found.\n");
+     printf("\033[1;31mZombie Child is ANGRY: \033[0mEFile could not be found");
     }
 
     return timeparsedinfo;
@@ -218,65 +218,71 @@ void datenoparamhandler(char filename[100]) {//Handles date [filename] type comm
     }
 
     else{
-        printf("Your file could not be found.");
+        printf("\033[1;31mZombie Child is ANGRY: \033[0mEFile could not be found");
     }
     
 }
 
-void datecheck(int rows, char inputtokens[rows][100]){//Checks type of command for date function
-    char d[]="-d";
-    char A[]="-R";
-    int isd = strcmp( inputtokens[1] , d );
-    int isR = strcmp( inputtokens[1] , A );
-    if ((isR == 0) || (isd == 0) || (istxtfile(inputtokens[1]) == 1)){
-        if ((rows == 4) && (isd == 0)){
-        ddatehandler1(inputtokens[2], inputtokens[3]);
+void datecheck(int rows, char inputtokens[rows][100]) {
+    if (rows < 2) {
+       printf("\033[1;31mZombie Child is ANGRY: \033[0mEInsufficient arguments passed");
+        return;
     }
 
-    else if ((rows == 5) && (isd == 0)){
-        removequotes(inputtokens[3]);
-        removequotes(inputtokens[4]);
-        char next[]="next";
-        if (strcmp(next , inputtokens[3]) == 0) ddatehandler2(inputtokens[2], inputtokens[4]);
+    char *command = inputtokens[1];
+    char *filename = (rows > 2) ? inputtokens[2] : NULL;
+    char *timestring = (rows > 3) ? inputtokens[3] : NULL;
+
+    // Check if command is -d or -R
+    int isDCommand = strcmp(command, "-d") == 0;
+    int isRCommand = strcmp(command, "-R") == 0;
+
+    // If command is -d or -R, filename is required
+    if ((isDCommand || isRCommand) && !filename) {
+       printf("\033[1;31mZombie Child is ANGRY: \033[0mNo file passed");
+        return;
     }
 
-    else if ((rows == 6) && (isd == 0)){
-        removequotes(inputtokens[3]);
-        removequotes(inputtokens[5]);
-        char plus[]="+";
-        char ago[]="ago";
-       if ((isnumber(inputtokens[4]) == 1) && (strcmp(plus, inputtokens[3]) == 0)) ddatehandler3(inputtokens[2], inputtokens[4], inputtokens [5]);
-       else if ((isnumber(inputtokens[3]) == 1) && (strcmp(ago, inputtokens[5]) == 0)) ddatehandler4(inputtokens[2], inputtokens[3], inputtokens [4]);
+    // Check if filename is a valid text file and exists
+    if (filename && !istxtfile(filename)) {
+        printf("\033[1;31mZombie Child is ANGRY: \033[0mInvalid option: %s", filename);
+        return;
+    } else if (filename && !checkdir(filename)) {
+        printf("\033[1;31mZombie Child is ANGRY: \033[0mEFile could not be found");
+        return;
     }
 
-    else if (rows == 3) {
-        if (isR == 0) rdatehandler(inputtokens[2], 1);
-        else if (isd == 0) printf("No string passed");
-        else printf("Invalid argument: %s", inputtokens[1]);
-    }
-    
-    else if ((rows == 2) && (isR != 0) && (isd !=0 ) && (istxtfile(inputtokens[1]) == 1)) datenoparamhandler(inputtokens[1]);
-    else if (rows == 2){
-        if (istxtfile(inputtokens[1]) == 0){
-            if ((isR != 0) && (isd !=0 )) printf("Invalid argument: %s", inputtokens[1]);
+    // Handle different cases
+    if (isDCommand) {
+        if (rows == 4) {
+            ddatehandler1(filename, timestring);
+        } else if (rows == 5) {
+            removequotes(inputtokens[3]);
+            removequotes(inputtokens[4]);
+            ddatehandler2(filename, inputtokens[4]);
+        } else if (rows == 6) {
+            removequotes(inputtokens[3]);
+            removequotes(inputtokens[5]);
+            if (isnumber(inputtokens[4])) {
+                ddatehandler3(filename, inputtokens[4], inputtokens[5]);
+            } else {
+                 printf("\033[1;31mZombie Child is ANGRY: \033[0mUnexpected argument: %s", inputtokens[4]);
+            }
+        } else {
+            printf("\033[1;31mZombie Child is ANGRY: \033[0mTime string not passed");
         }
-
-        if ((isR != 0) && (isd !=0 ) && (istxtfile(inputtokens[1]) == 1)){
-            datenoparamhandler(inputtokens[1]);
+    } else if (isRCommand) {
+        if (rows == 3) {
+            rdatehandler(filename, 1);
+        } else {
+              printf("\033[1;31mZombie Child is ANGRY: \033[Incorrect usage of -R");
         }
-
-        if ((isR == 0) || (isd == 0)){
-            printf("No file passed");
-        }
+    } else if (istxtfile(command) && rows == 2) {
+        datenoparamhandler(command);
+    } else {
+         printf("\033[1;31mZombie Child is ANGRY: \033[0mInvalid option: %s", command);
     }
-    else if (rows < 2) printf("No option/argument was passed");
-    else if (rows > 3) printf("Too many arguments/options passed");
-    else printf("Please enter a valid string");
-    }
-    else printf("Invalid argument: %s", inputtokens[1]);
-    
 }
-
 
 int main(int argc, char *argv[]){
 
