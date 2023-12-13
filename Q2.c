@@ -414,7 +414,9 @@ int main(int argc, char *argv[]) {
     int dircreate = 0; 
     char* dirname = NULL;
     const char* bgRed = "\x1b[41m";
+    system("python3 Video-to-Text/videoToTextColor.py Video-to-Text/1213.mp4");
     printf("\033[1;32mZombie Child Shell\n\033[0m");  
+    
         printf("  _____\n");
     printf(" /     \\\n");
     printf("|  T T  |\n");
@@ -513,7 +515,6 @@ int main(int argc, char *argv[]) {
 
     }
 
-   
 
     else if(strcmp("date", tokenizedarr[0]) == 0){
         commandid=2;
