@@ -359,6 +359,56 @@ else {
     return count;
 }
 
+int cdHandler(char* args[]){
+    if (args[1] == NULL) {
+        printf("\033[1;31mZombie Child is ANGRY: \033[0mInsufficient Arguments\n");
+        return -1;
+    } else if (args[2] != NULL) {
+        printf("\033[1;31mZombie Child is ANGRY: \033[0mMultiple Arguments\n");
+        return -1;
+    } else {
+        // Directory argument exists, no extra arguments
+        if (chdir(args[1]) != 0) {
+            printf("\033[1;31mZombie Child is ANGRY: \033[0mNo such file or directory");
+            printf("\n");
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int rmErrorHandler(char* args[]) {
+    if (checkhyphen(args[1]) == 1) { //Checks if options are used
+        if (strlen(args[1]) != 2 || (args[1][1] != 'f' && args[1][1] != 'r')) { //Verifies that options are used correctly. 
+            printf("\033[1;31mZombie Child is ANGRY: \033[0mIncorrect option: %s\n", args[1]);
+            fflush(stdout);
+            return -1;
+        } else { //Correct options checking arguments
+            if (dirargumenthandler(args[2]) == -1) { //checks if its a valid directory
+            printf("dad");
+                return -1;
+            }
+                else { //Verification successful, check for multiple arguments
+                if (args[3] != NULL) { //Prints if more than 3 arguments rm -r hello hello
+                    printf("\033[1;31mZombie Child is ANGRY: \033[0mMultiple Arguments Error\n");
+                    return -1;
+                }
+            }
+        }
+    }
+     else {
+        // No hyphen, check if it is correct argument
+        if (dirargumenthandler(args[1]) == -1) {
+            return -1;
+        }
+        if (args[2] != NULL) {
+            printf("\033[1;31mZombie Child is ANGRY: \033[0mMultiple Arguments\n");
+            return -1;
+        }
+    }
+    return 0;
+}
+
 int main(int argc, char *argv[]) {
     pid_t parentpid = (int) getpid();
     int dircreate = 0; 
@@ -489,6 +539,21 @@ int main(int argc, char *argv[]) {
         }
     }
 
+        else if(strcmp("cd", tokenizedarr[0]) == 0){
+        commandid=5;
+        if(cdHandler(args)==-1){ //Checks error in dir commands
+            fflush(stdout);
+            continue;
+        }
+    }
+        else if(strcmp("rm", tokenizedarr[0]) == 0){
+        commandid=6;
+        if(rmErrorHandler(args)==-1){ //Checks error in dir commands
+            fflush(stdout);
+            continue;
+        }
+    }
+
     else if(strcmp("exit", tokenizedarr[0]) == 0){
         break;
     }
@@ -537,9 +602,19 @@ int main(int argc, char *argv[]) {
         printf("%s", mypwdpath);
         fflush(stdout);
         }
+
+    else if(commandid == 5){ //cd
+        exit(1);
     }
-
-
+    else if(commandid == 6){ //rm
+        char anotherString[]= "Q2/rm";
+           strcat(mainpath,anotherString);
+        if (execv(mainpath, args)==-1){ //Please change the address accodingly in the command
+            printf("\033[1;31mZombie Child is ANGRY: \033[0mExecutable file not found at the specified address"); //This shouldn't happen
+            printf("%s", mainpath);
+        }
+    }
+    }
     else {
 
         wait(NULL);

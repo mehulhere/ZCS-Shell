@@ -12,3 +12,5 @@ dir: dir.c
 
 ls: ls.c
 	gcc ls.c -o ls
+
+clean: rm -f Q2 date dir ls
