@@ -1,22 +1,17 @@
-all: Q2 date dir ls run_script
+all:  date dir ls shell
 
-Q2: Q2.c
-	gcc Q2.c -g -o Q2
-	./Q2 
+shell: shell.c
+	gcc shell.c -o shell
+	./shell 
 
 date: date.c
-	gcc date.c -g -o date
+	gcc date.c -o date
 
 dir: dir.c
-	gcc dir.c -g -o dir
+	gcc dir.c -o dir
 
 ls: ls.c
-	gcc ls.c -g -o ls
-
-.PHONY: run_script
-
-run_script:
-	python3 Video-to-Text/videoToTextColor.py Video-to-Text/1213.mp4
+	gcc ls.c -o ls
 
 clean:
 	rm -f Q2 date dir ls

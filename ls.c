@@ -9,7 +9,8 @@
 #include <pwd.h>
 #include <grp.h>
 
-void printFileMode(mode_t mode) {
+void printFileMode(mode_t mode)
+{
     printf((S_ISDIR(mode)) ? "d" : "-");
     printf((mode & S_IRUSR) ? "r" : "-");
     printf((mode & S_IWUSR) ? "w" : "-");
@@ -22,14 +23,17 @@ void printFileMode(mode_t mode) {
     printf((mode & S_IXOTH) ? "x" : "-");
 }
 
-void printFileInfo(struct dirent *d, int l, const char *dir) {
+void printFileInfo(struct dirent *d, int l, const char *dir)
+{
     int isHiddenFile = (d->d_name[0] == '.');
-    if (l) {
+    if (l)
+    {
         struct stat fileInfo;
         char path[1024];
         snprintf(path, sizeof(path), "%s/%s", dir, d->d_name);
 
-        if (stat(path, &fileInfo) < 0) {
+        if (stat(path, &fileInfo) < 0)
+        {
             perror("stat");
             return;
         }
@@ -45,28 +49,35 @@ void printFileInfo(struct dirent *d, int l, const char *dir) {
 
         char timeStr[16];
         strftime(timeStr, sizeof(timeStr), "%b %d %H:%M", localtime(&fileInfo.st_mtime));
-        printf(" %s %s\n", timeStr, d->d_name);
-    } else {
-        if (isHiddenFile) {
+        printf(" %s \033[1;32m%s\x1b[34m \033[0m\n", timeStr, d->d_name);
+    }
+    else
+    {
+        if (isHiddenFile)
+        {
             printf("\033[42m\033[34m%s\033[0m ", d->d_name); // Yellow color for hidden files
-        } else {
-            printf("\033[1;32m%s \x1b[34m \033[0m", d->d_name);// Green color for regular files
         }
-       
-      
+        else
+        {
+            printf("\033[1;32m%s \x1b[34m \033[0m", d->d_name); // Green color for regular files
+        }
     }
 }
 
-void ls(const char *dir, int l, int a) {
+void ls(const char *dir, int l, int a)
+{
     DIR *dp = opendir(dir);
-    if (!dp) {
+    if (!dp)
+    {
         perror("Unable to open directory");
         return;
     }
 
     struct dirent *d;
-    while ((d = readdir(dp)) != NULL) {
-        if (!a && d->d_name[0] == '.') {
+    while ((d = readdir(dp)) != NULL)
+    {
+        if (!a && d->d_name[0] == '.')
+        {
             continue; // Skip hidden files unless -a option is specified
         }
         printFileInfo(d, l, dir);
@@ -74,15 +85,20 @@ void ls(const char *dir, int l, int a) {
     closedir(dp);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     int l_flag = 0;
     int a_flag = 0;
 
     // Parsing command-line arguments
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-l") == 0) {
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "-l") == 0)
+        {
             l_flag = 1;
-        } else if (strcmp(argv[i], "-a") == 0) {
+        }
+        else if (strcmp(argv[i], "-a") == 0)
+        {
             a_flag = 1;
         }
     }
